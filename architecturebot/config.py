@@ -41,10 +41,10 @@ def _get_env(name: str, default: str | None = None) -> str:
 
 
 settings = Settings(
-    telegram_bot_token=_get_env("TELEGRAM_BOT_TOKEN"),
     openai_api_key=_get_env("OPENAI_API_KEY"),
     openai_model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
     max_tokens=int(os.getenv("OPENAI_MAX_TOKENS", "450")),
+    telegram_bot_token=_get_env("TELEGRAM_BOT_TOKEN")
 )
 
 

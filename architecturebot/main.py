@@ -24,9 +24,9 @@ logger = logging.getLogger("architecturebot")
 
 
 WELCOME_TEXT = (
-    "Привет:)\n"
-    "Сначала отправьте ключ авторизации.\n"
-    "Затем пришлите фото здания — я кратко и критично оценю стиль, фасад, контекст и принципы, и выставлю балл 1–10."
+    "Привет:) Я Архитектурный критик\n"
+    "Сначала отправь ключ авторизации.\n"
+    "Затем пришлите фото здания — я оценю его"
 )
 
 
@@ -36,8 +36,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(
-        "Сначала отправьте ключ авторизации одной строкой (без /key). Затем пришлите фото здания (хорошего качества). "
-        "Текст и голосовые не анализируются — требуется изображение."
+        "Сначала отправьте ключ авторизации одной строкой. Затем пришлите фото здания. "
+        "Текст и голосовые я не анализирую — присылай фото или изображения."
     )
 
 
@@ -47,7 +47,7 @@ async def key_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         return
     args = message.text.split()
     if len(args) < 2:
-        await message.reply_text("Использование: /key <одноразовый_ключ>")
+        await message.reply_text("Неверный ключ. Проверьте и попробуйте снова")
         return
     api_key = args[1].strip()
     info = get_key_info(api_key)
@@ -93,12 +93,12 @@ async def handle_photo_or_image(update: Update, context: ContextTypes.DEFAULT_TY
     api_key = context.chat_data.get("api_key") if context.chat_data else None
     if not api_key:
         await update.effective_message.reply_text(
-            "Доступ по ключу. Введите команду: /key <одноразовый_ключ>."
+            "Доступ по ключу. Введите ключ."
         )
         return
     info = get_key_info(api_key)
     if not info:
-        await update.effective_message.reply_text("Ключ недействителен. Запросите новый.")
+        await update.effective_message.reply_text("Ключ недействителен. Попробуй еще раз.")
         return
     if info.remaining != UNLIMITED and info.remaining <= 0:
         await update.effective_message.reply_text(
@@ -113,7 +113,7 @@ async def handle_photo_or_image(update: Update, context: ContextTypes.DEFAULT_TY
         )
         return
 
-    status_msg = await update.effective_message.reply_text("Анализирую изображение…")
+    status_msg = await update.effective_message.reply_text("Анализирую изображение… Это займет небольше минуты")
 
     try:
         result_text = await analyze_building_image(image_bytes)
