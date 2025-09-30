@@ -113,7 +113,7 @@ async def handle_photo_or_image(update: Update, context: ContextTypes.DEFAULT_TY
         )
         return
 
-    status_msg = await update.effective_message.reply_text("Анализирую изображение… Это займет небольше минуты")
+    status_msg = await update.effective_message.reply_text("Анализирую изображение… Это займет не больше минуты")
 
     try:
         result_text = await analyze_building_image(image_bytes)
